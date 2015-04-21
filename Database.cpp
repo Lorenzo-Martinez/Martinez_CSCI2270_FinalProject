@@ -73,7 +73,13 @@ void Database::deleteItem(std::string category, std::string name)
 }
 
 //calculates a hashSum
-int Database::hashSum(std::string stringToHash, int tableSize)
+int Database::hashSum(std::string stringToHash)
 {
-
+    int sum = 0;
+    for(int i = 0; i< stringToHash.length(); i++)
+    {
+        sum =sum + stringToHash[i];
+    }
+    sum = sum % tableSize;
+    return sum;
 }
