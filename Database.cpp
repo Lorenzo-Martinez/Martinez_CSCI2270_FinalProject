@@ -2,19 +2,99 @@
 #include<vector>
 #include<iostream>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+#include<sstream>
+
 Database::Database(int size)
 {
     tableSize = size;
+
     for(int i = 0; i < size; i++)
     {
         std::vector<Category> categoryVector;
         tableVector.push_back(categoryVector);
     }
+
+    std::string currentLine;
+    std::fstream databaseStream;
+    databaseStream.open("Database.txt");
+    int one_two_counter = 0;
+    std::string category;
+    std::string name;
+    std::string description;
+    std::string inText;
+    while(!databaseStream.eof())
+    {
+
+        getline(databaseStream, currentLine);
+        std::istringstream lineStream(currentLine);
+
+        if(currentLine[0] != '-' && currentLine != "")
+        {
+            while(getline(lineStream, inText, ':' ))
+            {
+                if(one_two_counter == 0)
+                {
+                    one_two_counter++;
+                    category = inText;
+                }
+                else if(one_two_counter == 1)
+                {
+                    one_two_counter++;
+                    description = inText;
+                    one_two_counter = 0;
+                }
+            }
+            insertCategory(category, description);
+        }
+        else if(currentLine != "")
+        {
+            while(getline(lineStream, inText, ':' ))
+            {
+                if(one_two_counter == 0)
+                {
+                    one_two_counter++;
+                    name = inText.substr(2);
+                }
+                else if(one_two_counter == 1)
+                {
+                    one_two_counter++;
+                    description = inText;
+                    one_two_counter = 0;
+                }
+            }
+            insertItem(category, name, description);
+        }
+    }
+    databaseStream.close();
 }
 
 Database::~Database()
 {
-
+    std::fstream databaseStream;
+    databaseStream.open("Database.txt");
+    if(databaseStream.fail())
+    {
+        std::cout<<"failed to open file"<<std::endl;
+    }
+    if(numOfCategories == 0)
+    {
+        std::cout<<"empty"<<std::endl;
+    }
+    for(int z = 0; z< tableVector.size(); z++)
+    {
+        for(int i = 0; i < tableVector[z].size(); i++)
+        {
+            databaseStream<<tableVector[z][i].name<<":"<<tableVector[z][i].description<<std::endl;
+            std::cout<<tableVector[z][i].name<<":"<<tableVector[z][i].description<<std::endl;
+            for(int y = 0; y < tableVector[z][i].itemVector.size(); y++)
+            {
+                databaseStream<<"--"<<tableVector[z][i].itemVector[y].name<<":"<<tableVector[z][i].itemVector[y].description<<std::endl;
+            }
+        }
+    }
+    databaseStream.close();
 }
 
 //inserts a category into the database
@@ -52,10 +132,10 @@ void Database::printDatabase()
     {
         for(int i = 0; i < tableVector[z].size(); i++)
         {
-            std::cout<<tableVector[z][i].name<<" : "<<tableVector[z][i].description<<std::endl;
+            std::cout<<tableVector[z][i].name<<":"<<tableVector[z][i].description<<std::endl;
             for(int y = 0; y < tableVector[z][i].itemVector.size(); y++)
             {
-                std::cout<<"--"<<tableVector[z][i].itemVector[y].name<<" : "<<tableVector[z][i].itemVector[y].description<<std::endl;
+                std::cout<<"--"<<tableVector[z][i].itemVector[y].name<<":"<<tableVector[z][i].itemVector[y].description<<std::endl;
             }
         }
     }
@@ -69,10 +149,10 @@ void Database::printCategory(std::string category)
     {
         if(tableVector[sum][i].name == category)
         {
-            std::cout<<tableVector[sum][i].name<<" : "<<tableVector[sum][i].description<<std::endl;
+            std::cout<<tableVector[sum][i].name<<":"<<tableVector[sum][i].description<<std::endl;
             for(int y = 0; y < tableVector[sum][i].itemVector.size(); y++)
             {
-                std::cout<<"--"<<tableVector[sum][i].itemVector[y].name<<" : "<<tableVector[sum][i].itemVector[y].description<<std::endl;
+                std::cout<<"--"<<tableVector[sum][i].itemVector[y].name<<":"<<tableVector[sum][i].itemVector[y].description<<std::endl;
             }
         }
     }
@@ -90,7 +170,7 @@ void Database::printItem(std::string category, std::string name)
             {
                 if(tableVector[sum][i].itemVector[y].name == name)
                 {
-                    std::cout<<tableVector[sum][i].itemVector[y].name<<" : "<<tableVector[sum][i].itemVector[y].description<<std::endl;
+                    std::cout<<tableVector[sum][i].itemVector[y].name<<":"<<tableVector[sum][i].itemVector[y].description<<std::endl;
                 }
             }
         }
@@ -108,7 +188,7 @@ void Database::printAllCategories()
     {
         for(int i = 0; i < tableVector[z].size(); i++)
         {
-            std::cout<<tableVector[z][i].name<<" : "<<tableVector[z][i].description<<std::endl;
+            std::cout<<tableVector[z][i].name<<":"<<tableVector[z][i].description<<std::endl;
         }
     }
 }
