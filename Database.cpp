@@ -4,7 +4,11 @@
 #include <algorithm>
 Database::Database(int size)
 {
-
+    for(int i = 0; i < size; i++)
+    {
+        std::vector<Category> categoryVector;
+        tableVector.push_back(categoryVector);
+    }
 }
 
 Database::~Database()
