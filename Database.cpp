@@ -19,6 +19,11 @@ Database::Database(int size)
     std::string currentLine;
     std::fstream databaseStream;
     databaseStream.open("Database.txt");
+    if(databaseStream.fail())
+    {
+        std::cout<<"failed to open Database.txt"<<std::endl;
+        return;
+    }
     int one_two_counter = 0;
     std::string category;
     std::string name;
@@ -76,11 +81,7 @@ Database::~Database()
     databaseStream.open("Database.txt");
     if(databaseStream.fail())
     {
-        std::cout<<"failed to open file"<<std::endl;
-    }
-    if(numOfCategories == 0)
-    {
-        std::cout<<"empty"<<std::endl;
+        std::cout<<"failed to open Database.txt"<<std::endl;
     }
     for(int z = 0; z< tableVector.size(); z++)
     {
@@ -213,17 +214,23 @@ void Database::printDatabase()
 */
 void Database::printCategory(std::string category)
 {
+    bool foundCategory = false;
     int sum = hashSum(category);
     for(int i = 0; i < tableVector[sum].size(); i++)
     {
         if(tableVector[sum][i].name == category)
         {
+            foundCategory = true;
             std::cout<<tableVector[sum][i].name<<":"<<tableVector[sum][i].description<<std::endl;
             for(int y = 0; y < tableVector[sum][i].itemVector.size(); y++)
             {
                 std::cout<<"--"<<tableVector[sum][i].itemVector[y].name<<":"<<tableVector[sum][i].itemVector[y].description<<std::endl;
             }
         }
+    }
+    if(foundCategory == false)
+    {
+        std::cout<<"Couldn't find category"<<std::endl;
     }
 }
 
@@ -241,6 +248,7 @@ void Database::printCategory(std::string category)
 */
 void Database::printItem(std::string category, std::string name)
 {
+    bool foundItem = false;
     int sum = hashSum(category);
     for(int i = 0; i < tableVector[sum].size(); i++)
     {
@@ -250,10 +258,15 @@ void Database::printItem(std::string category, std::string name)
             {
                 if(tableVector[sum][i].itemVector[y].name == name)
                 {
+                    foundItem = true;
                     std::cout<<tableVector[sum][i].itemVector[y].name<<":"<<tableVector[sum][i].itemVector[y].description<<std::endl;
                 }
             }
         }
+    }
+    if(foundItem == false)
+    {
+        std::cout<<"Couldn't find item"<<std::endl;
     }
 }
 
@@ -301,6 +314,7 @@ void Database::printAllCategories()
 */
 void Database::changeItemCategory(std::string oldCategory, std::string newCategory, std::string name)
 {
+    bool foundItem =false;
     std::string description;
     int sum = hashSum(oldCategory);
     for(int i = 0; i < tableVector[sum].size(); i++)
@@ -313,10 +327,18 @@ void Database::changeItemCategory(std::string oldCategory, std::string newCatego
                 {
                     description = tableVector[sum][i].itemVector[y].description;
                     tableVector[sum][i].itemVector.erase(tableVector[sum][i].itemVector.begin()+y);
+                    foundItem = true;
                 }
             }
         }
     }
+
+    if(foundItem == false)
+    {
+        std::cout<<"Couldn't find item"<<std::endl;
+        return;
+    }
+
     Item itemToMove(newCategory, name, description);
     sum = hashSum(newCategory);
     for(int i = 0; i < tableVector[sum].size(); i++)
@@ -343,6 +365,7 @@ void Database::changeItemCategory(std::string oldCategory, std::string newCatego
 */
 void Database::changeItemName(std::string category, std::string oldName, std::string newName)
 {
+    bool foundItem = false;
     int sum = hashSum(category);
     for(int i = 0; i < tableVector[sum].size(); i++)
     {
@@ -353,9 +376,15 @@ void Database::changeItemName(std::string category, std::string oldName, std::st
                 if(tableVector[sum][i].itemVector[y].name == oldName)
                 {
                     tableVector[sum][i].itemVector[y].name = newName;
+                    foundItem = true;
                 }
             }
         }
+    }
+
+    if(foundItem == false)
+    {
+        std::cout<<"Couldn't find item"<<std::endl;
     }
 
 }
@@ -374,6 +403,7 @@ void Database::changeItemName(std::string category, std::string oldName, std::st
 */
 void Database::changeItemDescription(std::string category, std::string name, std::string newDescription)
 {
+    bool foundItem = false;
     int sum = hashSum(category);
     for(int i = 0; i < tableVector[sum].size(); i++)
     {
@@ -384,9 +414,15 @@ void Database::changeItemDescription(std::string category, std::string name, std
                 if(tableVector[sum][i].itemVector[y].name == name)
                 {
                     tableVector[sum][i].itemVector[y].description = newDescription;
+                    foundItem = true;
                 }
             }
         }
+    }
+
+    if(foundItem == false)
+    {
+        std::cout<<"Couldn't find item"<<std::endl;
     }
 }
 
@@ -405,15 +441,21 @@ void Database::changeItemDescription(std::string category, std::string name, std
 */
 void Database::deleteCategory(std::string category)
 {
+    bool foundCategory = false;
     int sum = hashSum(category);
     for(int i = 0; i < tableVector[sum].size(); i++)
     {
         if(tableVector[sum][i].name == category)
         {
             tableVector[sum].erase(tableVector[sum].begin()+i);
+            numOfCategories--;
+            foundCategory = true;
         }
     }
-    numOfCategories--;
+    if(foundCategory == false)
+    {
+        std::cout<<"Couldn't find category"<<std::endl;
+    }
 }
 
 /*
@@ -430,6 +472,7 @@ void Database::deleteCategory(std::string category)
 */
 void Database::deleteItem(std::string category, std::string name)
 {
+    bool foundItem = false;
     int sum = hashSum(category);
     for(int i = 0; i < tableVector[sum].size(); i++)
     {
@@ -440,11 +483,16 @@ void Database::deleteItem(std::string category, std::string name)
                 if(tableVector[sum][i].itemVector[y].name == name)
                 {
                     tableVector[sum][i].itemVector.erase(tableVector[sum][i].itemVector.begin()+y);
+                    numOfItems--;
+                    foundItem = true;
                 }
             }
         }
     }
-    numOfItems--;
+    if(foundItem == false)
+    {
+        std::cout<<"Couldn't find item"<<std::endl;
+    }
 }
 /*
     int hashSum(string)
