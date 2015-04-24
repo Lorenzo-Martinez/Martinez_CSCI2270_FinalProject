@@ -97,7 +97,19 @@ Database::~Database()
     databaseStream.close();
 }
 
-//inserts a category into the database
+/*
+    void insertCategory(string, string)
+
+    Inserts a category into the database. First, a new category with the name and description passed in is created.
+    Second, the place for the new category is determined via a the hash sum of the new category's name.
+    The new category is then inserted at that place in the database.
+
+    insertCategory("Food", "Things that are meant to be eaten") will insert a category with the name "Food" and the description "Things that are meant to be eaten".
+
+    pre-conditions: the category name and description cannot have semicolons in them
+
+    post-conditions: a category with the name and description passed in will now exist within the database
+*/
 void Database::insertCategory(std::string name, std::string description)
 {
     Category newCategory(name, description);
@@ -106,7 +118,18 @@ void Database::insertCategory(std::string name, std::string description)
     numOfCategories++;
 }
 
-//inserts an item into the database
+/*
+    void insertItem(string, string, string)
+
+    Inserts an item into the database. First, a new item with the name and description passed in is created.
+    Second, the category that the item is going to be inserted into is found via the hash sum of the category name. Then the item is added to that category.
+
+    insertItem("Food", "Apple", "Sweet red fruit") will insert an item with the name "Apple" and the description "Sweet red fruit" into the category "Food"
+
+    pre-conditions: the category has to already be in the database and the name and description of the item cannot have semicolons in them
+
+    post-conditions: an item with the name and description passed in will now exist within the specified category
+*/
 void Database::insertItem(std::string category, std::string name, std::string description)
 {
     Item newItem(category, name, description);
@@ -121,7 +144,24 @@ void Database::insertItem(std::string category, std::string name, std::string de
     numOfItems ++;
 }
 
-//prints the information of all the items and categories in the database
+/*
+    void printDatabase()
+
+    Parses all of the category vectors in each spot of the hash table and prints their names and descriptions as well as the names and descriptions of the items within each category.
+    If there are no categories in the database, "empty" will be printed
+
+    if the hash table has the category "Food" with the description "Things that are meant to be eaten"  and within that category is the item "Apple" with the description "Sweet red fruit"
+    and the hash table also has the category "Decoration" with the description "Things that are meant to be displayed" and within that category is the item "Sun Painting" with the description
+    "Painting of the sun rising over the horizon"
+    then printDatabase() will display: "Food:Things that are meant to be eaten"
+                                       "--Apple:Sweet red fruit"
+                                       "Decoration:Things that are meant to be displayed"
+                                       "--Sun Painting:Painting of the sun rising over the horizon"
+
+    pre-conditions: none
+
+    post-conditions: none
+*/
 void Database::printDatabase()
 {
     if(numOfCategories == 0)
@@ -141,7 +181,22 @@ void Database::printDatabase()
     }
 }
 
-//prints the information of all the items within a category
+/*
+    void printCategory(string)
+
+    Prints the name and description of a category and of all the items in that category.
+    First, the category that the item belongs in is found via the hash sum of the category name,
+    then the category. The name and description of that category is printed.
+    Then, the category is parsed and all of the names and descriptions of the items within that category are printed
+
+    if the category "Food" with the description "Things that are meant to be eaten" has an item called
+    "Apple" with the description "Sweet red fruit" then printCategory("Food") will print: "Food:Things that are meant to be eaten"
+                                                                                          "--Apple:Sweet red fruit"
+
+    pre-conditions: the category has to exist
+
+    post-conditions: none
+*/
 void Database::printCategory(std::string category)
 {
     int sum = hashSum(category);
@@ -158,7 +213,18 @@ void Database::printCategory(std::string category)
     }
 }
 
-//finds an item and prints all of the information related to it
+/*
+    void printItem(string, string)
+
+    Prints the name and description of an item. First, the category that the item belongs in is found via the hash sum of the category name,
+    then the category is searched for the item. The item's name and description is then printed.
+
+    if the category "Food" has an item called "Apple" with the description "Sweet red fruit" then printItem("Food", "Apple") will print: "Apple:Sweet red fruit"
+
+    pre-conditions: the item and category have to exist
+
+    post-conditions: none
+*/
 void Database::printItem(std::string category, std::string name)
 {
     int sum = hashSum(category);
@@ -177,7 +243,19 @@ void Database::printItem(std::string category, std::string name)
     }
 }
 
-//prints all of the categories within the database
+/*
+    void printAllCategories()
+
+    Parses all of the category vectors in each spot of the hash table and prints their names and descriptions. If there are no categories in the database, "empty" will be printed
+
+    if the hash table has the category "Food" with the description "Things that are meant to be eaten" and the category "Decoration" with the description "Things that are meant to be displayed"
+    then printAllCategories() will display: "Food:Things that are meant to be eaten"
+                                            "Decoration:Things that are meant to be displayed"
+
+    pre-conditions: none
+
+    post-conditions: none
+*/
 void Database::printAllCategories()
 {
     if(numOfCategories == 0)
@@ -193,7 +271,20 @@ void Database::printAllCategories()
     }
 }
 
-//changes the category of an item
+/*
+    void changeItemCategory(string, string, string)
+
+    Changes the category of an item. First, the category that the item belongs in is found via the hash sum of the category name,
+    then the category is searched for the item. The description and name of that item are then saved in temp variables.
+    The item is then deleted from its old category. The new category is found via the hash sum of the category name, and a new
+    item with the same name and description as the item that was deleted is added to that category.
+
+    changeItemCategory("Food", "Decoration", "Plastic Apple") will change the category of "Plastic Apple" from "Food" to "Decoration"
+
+    pre-conditions: the old and new category and item have to already be in the database
+
+    post-conditions: the item will be permanently removed from the old category and added to the new one
+*/
 void Database::changeItemCategory(std::string oldCategory, std::string newCategory, std::string name)
 {
     std::string description;
@@ -224,7 +315,18 @@ void Database::changeItemCategory(std::string oldCategory, std::string newCatego
 
 }
 
-//changes the name of an item
+/*
+    void changeItemName(string, string, string)
+
+    Changes the name of an item. First, the category that the item belongs in is found via the hash sum of the category name,
+    then the category is searched for the item. The old item's name is then replaced by the new one.
+
+    changeItemName("Food", "Apple", "Orange") will change the name of "Apple" in the category "Food" to "Orange"
+
+    pre-conditions: the category and item have to already be in the database and the new name cannot have a semicolon in it
+
+    post-conditions: the name of the item will be permanently changed to the new name
+*/
 void Database::changeItemName(std::string category, std::string oldName, std::string newName)
 {
     int sum = hashSum(category);
@@ -244,7 +346,18 @@ void Database::changeItemName(std::string category, std::string oldName, std::st
 
 }
 
-//changes the description of an item
+/*
+    void changeItemDescription(string, string, string)
+
+    Changes the description of an item. First, the category that the item belongs in is found via the hash sum of the category name,
+    then the category is searched for the item. The old item's description is then replaced by the new one.
+
+    changeItemDescription("Food", "Apple", "Sweet red fruit") will change the description of "Apple" in the category "Food" to "Sweet red fruit"
+
+    pre-conditions: the category and item have to already be in the database and the new description cannot have a semicolon in it
+
+    post-conditions: the description of the item will be permanently changed to the new description
+*/
 void Database::changeItemDescription(std::string category, std::string name, std::string newDescription)
 {
     int sum = hashSum(category);
@@ -263,7 +376,19 @@ void Database::changeItemDescription(std::string category, std::string name, std
     }
 }
 
-//deletes a category
+/*
+    void deleteCategory(string)
+
+    Deletes a category from the database. First, the vector that the category should be found in is located by using the hash sum of the category name.
+    Then, The vector of categories at that location is searched for the specific category. Once it is found, it is erased from the vector.
+    All of the items that were in that category are deleted as well.
+
+    deleteCategory(Food) will delete the category "Food" and all of the items within it
+
+    pre-conditions: the category has to already be in the database
+
+    post-conditions: the category and all of its associated items will no longer be in the database and will be permanently deleted
+*/
 void Database::deleteCategory(std::string category)
 {
     int sum = hashSum(category);
@@ -277,7 +402,18 @@ void Database::deleteCategory(std::string category)
     numOfCategories--;
 }
 
-//deletes an item
+/*
+    void deleteItem(string, string)
+
+    Deletes an item from the database. First, the category that the item belongs in is found via the hash sum of the category name,
+    then the category is searched for the item. THe item is then erased from the category's vector.
+
+    deleteItem(Food, Apple) will delete the item "Apple" within the category "Food" providing that they both exist
+
+    pre-conditions: the item and category have to already be in the database
+
+    post-conditions: the item will no longer be in the database and will be permanently deleted
+*/
 void Database::deleteItem(std::string category, std::string name)
 {
     int sum = hashSum(category);
@@ -299,9 +435,9 @@ void Database::deleteItem(std::string category, std::string name)
 /*
     int hashSum(string)
 
-    Calculates a hashsum based on the string passed in as well as the table size that the Database was created with.
+    Calculates a hash sum based on the string passed in as well as the table size that the Database was created with.
     All of the decimal ascii values of each character of the string are added together, then modded by the table size.
-    The resulting number is the hashsum.
+    The resulting number is the hash sum.
 
     hashSum(Dog) with a table size of 10 will return 2
 
