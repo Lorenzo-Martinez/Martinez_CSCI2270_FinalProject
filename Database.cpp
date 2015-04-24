@@ -87,7 +87,7 @@ Database::~Database()
         for(int i = 0; i < tableVector[z].size(); i++)
         {
             databaseStream<<tableVector[z][i].name<<":"<<tableVector[z][i].description<<std::endl;
-            std::cout<<tableVector[z][i].name<<":"<<tableVector[z][i].description<<std::endl;
+            //std::cout<<tableVector[z][i].name<<":"<<tableVector[z][i].description<<std::endl;
             for(int y = 0; y < tableVector[z][i].itemVector.size(); y++)
             {
                 databaseStream<<"--"<<tableVector[z][i].itemVector[y].name<<":"<<tableVector[z][i].itemVector[y].description<<std::endl;
@@ -112,6 +112,13 @@ Database::~Database()
 */
 void Database::insertCategory(std::string name, std::string description)
 {
+    std::size_t foundName = name.find(':');
+    std::size_t foundDescription = description.find(':');
+    if(foundName != std::string::npos || foundDescription != std::string::npos)
+    {
+        std::cout<<"Name or description has a semicolon in it. Unable to add item."<<std::endl;
+        return;
+    }
     Category newCategory(name, description);
     int sum = hashSum(name);
     tableVector[sum].push_back(newCategory);
@@ -132,6 +139,13 @@ void Database::insertCategory(std::string name, std::string description)
 */
 void Database::insertItem(std::string category, std::string name, std::string description)
 {
+    std::size_t foundName = name.find(':');
+    std::size_t foundDescription = description.find(':');
+    if(foundName != std::string::npos || foundDescription != std::string::npos)
+    {
+        std::cout<<"Name or description has a semicolon in it. Unable to add item."<<std::endl;
+        return;
+    }
     Item newItem(category, name, description);
     int sum = hashSum(category);
     for(int z = 0; z<tableVector[sum].size(); z++)
