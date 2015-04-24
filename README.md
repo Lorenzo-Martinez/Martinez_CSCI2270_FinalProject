@@ -8,13 +8,21 @@ Project Summary
 How to Run
 
 1.Download the files located in the repo.
+
 2.Open up a new project in an IDE or something that runs C++ files.
+
 3.Add a blank text file named "Database.txt" into the project folder.
+
 4.Add DriverFile.cpp, Database.cpp, and Database.h to the project and remove main.cpp from the project if there is one.
+
 5.Run DriverFile.cpp.
+
 6.A menu should be brought up in the console.
+
 7.Add as many categories or items as you want. 
+
 8.Quit the progrm by inputting 12. This will save all of the categories and items you added into the Database.txt file.
+
 9.The next time you run the program, the categories and items you added last time will be in the database when you start the program.
 
 Dependencies
