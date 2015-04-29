@@ -19,7 +19,7 @@ How to Run
 
 6.A menu should be brought up in the console.
 
-7.Add as many categories or items as you want. 
+7.Add or delete as many categories or items as you want by pressing the corresponding number next to the menu item.
 
 8.Quit the progrm by inputting 12. This will save all of the categories and items you added into the Database.txt file.
 
